@@ -1,0 +1,130 @@
+public String getKeyword(String word) {
+		/** COMPLETE THIS METHOD **/
+
+		word = word.toLowerCase();
+		word = word.trim();
+		//delete trailing punctutation
+		int lastChar = -1;
+		for(int i =0; i<word.length(); i++){
+			if(Character.isLetter(word.charAt(i))){
+				lastChar = i;
+			}
+		}
+		word = word.substring(0, lastChar+1);
+	/*	boolean flag = true;
+
+		while(flag){
+			if(word.length()==0) break;
+			if(word.charAt(word.length()-1)=='.' ||word.charAt(word.length()-1)=='?' || word.charAt(word.length()-1)=='!' || word.charAt(word.length()-1)==',' || word.charAt(word.length()-1)==';' || word.charAt(word.length()-1)==':' ){
+				word = word.substring(0, word.length()-1);
+				continue;
+			}
+			else{
+				flag = false;
+				break;
+			}
+		}*/
+		if(noiseWords.contains(word)) return null;
+		for(int i =0; i<word.length(); i++){
+			if(!Character.isLetter(word.charAt(i))){
+				return null;
+			}
+		}
+
+		return word;
+	}
+		public ArrayList<Integer> insertLastOccurrence(ArrayList<Occurrence> occs) {
+    		/** COMPLETE THIS METHOD **/
+
+    		// following line is a placeholder to make the program compile
+    		// you should modify it as needed when you write your code
+
+    		ArrayList<Integer> ints = new ArrayList<Integer>();
+    		Occurrence o = occs.get(occs.size()-1);
+    		int start = 0;
+    		int end = occs.size()-2; //you don't want to include the last element in the list bc ur taking it out
+    		int mid = -1;
+    		while(start<=end){
+    			mid = (start+end)/2;
+    			int freqAtPoint = occs.get(mid).frequency;
+    			if(freqAtPoint==o.frequency){
+    				break;
+    			}
+
+    			if(freqAtPoint<o.frequency){
+    				end = mid-1;
+    			}
+    			else{
+    				start = mid+1;
+    			}
+    			ints.add(mid);
+    		}
+    		occs.remove(occs.size()-1);
+    		occs.add(mid, o);
+    		return ints;
+    	}
+
+   public ArrayList<Integer> insertLastOccurrence(ArrayList<Occurrence> occs) {
+   		/** COMPLETE THIS METHOD **/
+
+   		// following line is a placeholder to make the program compile
+   		// you should modify it as needed when you write your code
+
+   		ArrayList<Integer> ints = new ArrayList<Integer>();
+   		Occurrence o = occs.get(occs.size()-1);
+   		int start = 0;
+   		int end = occs.size()-2; //you don't want to include the last element in the list bc ur taking it out
+   		int mid = 0;
+   		while(start<=end){
+   			mid = (start+end)/2;
+   			int freqAtPoint = occs.get(mid).frequency;
+   			if(freqAtPoint==o.frequency) break;
+   			end = freqAtPoint<o.frequency ? mid-=1 : end;
+   			start = freqAtPoint>o.frequency ? mid+=1 : start;
+   			ints.add(mid);
+   		}
+   	//	System.out.println(mid);
+   		occs.add(mid, o);
+   		occs.remove(occs.size()-1);
+   		return ints;
+   	}
+
+
+   public void mergeKeywords(HashMap<String,Occurrence> kws) {
+   		/** COMPLETE THIS METHOD **/
+   		for(String key:kws.keySet()){
+   			/*ArrayList<Occurrence> alist = keywordsIndex.containsKey(key) ? keywordsIndex.get(key) : new ArrayList<Occurrence>();
+   			Occurrence occ = kws.get(key);
+   			if(keywordsIndex.containsKey(key)){
+   				alist.add(occ);
+   				insertLastOccurrence(alist);
+   				//Check for overlap in documents
+   				for(Occurrence i: alist){
+   					for(Occurrence j: alist){
+   						if(i==j) continue;
+   						if(i.document.equals(j.document)){
+   							i.frequency = i.frequency+j.frequency;
+   							alist.remove(j);
+   							alist.add(i);
+   							alist.remove(i);
+   							insertLastOccurrence(alist);
+   						}
+   					}
+   				}
+   			}
+   			else{
+   				alist.add(occ);
+   				keywordsIndex.put(key, alist);
+   			}*/
+   			if(keywordsIndex.containsKey(key)){
+   				keywordsIndex.get(key).add(kws.get(key));
+   				insertLastOccurrence(keywordsIndex.get(key));
+   			}
+   			else{
+   				ArrayList<Occurrence> occ = new ArrayList<Occurrence>();
+   				occ.add(kws.get(key));
+   				keywordsIndex.put(key, occ);
+   			}
+   		}
+
+   	}
